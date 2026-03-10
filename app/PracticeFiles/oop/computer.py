@@ -11,20 +11,32 @@ class Car:
     #class namespace
     wheels = 4
 
-    def __init__(self):
+    def __init__(self, name, model):
         #instance variable
         #instance namespace
-        self.name = "BMW"
-        self.model = "2020"
+        self.name = name
+        self.model = model
+
+    @classmethod
+    def wheel_info(cls):
+        print("this method suggests that this is a class method")
+        return cls.wheels
+    
+    @staticmethod
+    def info():
+        print("This is a static method")
+        return "This is a car class"
 
 
-c1 = Car()
-c2 = Car()
+
+c1 = Car("BMW", "X5")
+c2 = Car("Audi", "A4")
 c1.wheels = 24
 Car.wheels = 5
 print(c1.wheels)
 print(c2.wheels)
-
+print(Car.wheel_info())
+print(Car.info())
 
 # com1 = Computer('i5', 16)
 # com2 = Computer('Ryzen 5', 8)
