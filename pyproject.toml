@@ -1,11 +1,7 @@
 [project]
 name = "PlacementPortalBackend"
 version = "0.1.0"
-description = "A FastAPI project"
-dependencies = [
-    "fastapi[standard]>=0.110.0",
-]
 
 [tool.fastapi]
-entrypoint = "sample:app"
+entrypoint = "app.main:app"
 
