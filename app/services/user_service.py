@@ -10,7 +10,6 @@ class UserService:
         self.repository = repository
 
     def register_user(self, user_in: UserCreate):
-        print("--- CRITICAlllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllL DEBUG ---")
         existing_user = self.repository.get_by_email(email=user_in.email)
 
         if existing_user:
@@ -18,11 +17,6 @@ class UserService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="A user with this email already exists."
             )
-        print("--- CRITICAL DEBUG ---")
-        print(f"Value: {user_in.password}")
-        print(f"Type: {type(user_in.password)}")
-        print(f"Length: {len(str(user_in.password))}")
-        print("----------------------")
 
         # 2. Security Phase: Hash the plain-text password
         hashed_pw = get_password_hash(user_in.password)
