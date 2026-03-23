@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:17
+    container_name: placement-portal-pgsql
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: placement_portal
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api1:
+    build: .
+    environment:
+      - INSTANCE_NAME=Instance 1
+      - DATABASE_URL=postgresql://admin:secret@db:5432/placement_portal
+    depends_on:
+      - db
+
+  api2:
+    build: .
+    environment:
+      - INSTANCE_NAME=Instance 2
+      - DATABASE_URL=postgresql://admin:secret@db:5432/placement_portal
+    depends_on:
+      - db
+
+  loadbalancer:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - api1
+      - api2
+
+volumes:
+  postgres_data:

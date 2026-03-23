@@ -1,12 +1,25 @@
+import os
+import tomllib
 from fastapi import FastAPI
+from app.routers import company_router
 
-app = FastAPI()
+with open("pyproject.toml", "rb") as f:
+    project_metadata = tomllib.load(f)["project"]
+
+INSTANCE_NAME = os.getenv("INSTANCE_NAME", "Unknown Instance")
+
+app = FastAPI(
+    title = project_metadata.get("name", "Placement Portal API"),
+    version = project_metadata.get("version", "0.1.0"),
+    description = "Backend for the campus placement portal"
+)
+
+app.include_router(company_router.router)
 
 @app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-@app.get("/companies/{company_id}")
-async def get_company_by_id(company_id: int):
-    return {"company_id": company_id, "name": f"Company {company_id}"}
-
+def health_check():
+    return {
+        "status": "ok", 
+        "message": "Placement Portal API is running",
+        "instance_handled_by": INSTANCE_NAME 
+    }
