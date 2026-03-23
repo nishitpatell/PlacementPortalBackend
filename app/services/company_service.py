@@ -1,6 +1,6 @@
 from fastapi import Depends
-from sqlalchemy.orm import Session
 
+from app.models.company_model import Company
 from app.schemas.company_schema import CompanyCreate
 from app.repositories.company_repository import CompanyRepository
 
@@ -10,7 +10,8 @@ class CompanyService:
         self.repository = repository
 
     def create_company(self, company_data: CompanyCreate):
-        return self.repository.create(company_data=company_data)
-    
+        db_company = Company(**company_data.model_dump())
+        return self.repository.create(db_company=db_company)
+
     def get_companies(self, skip: int = 0, limit: int = 100):
         return self.repository.get_companies(skip=skip, limit=limit)

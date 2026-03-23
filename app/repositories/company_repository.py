@@ -3,17 +3,13 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.models.company_model import Company
-from app.schemas.company_schema import CompanyCreate
 
 
 class CompanyRepository:
     def __init__(self, db: Session = Depends(get_db)):
         self.db = db
 
-    def create(self, company_data: CompanyCreate):
-        # Pydantic -> SQLAlchemy model conversion
-        db_company = Company(**company_data.model_dump())
-
+    def create(self, db_company: Company):
         self.db.add(db_company)
         self.db.commit()
         self.db.refresh(db_company)

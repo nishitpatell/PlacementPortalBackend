@@ -1,7 +1,7 @@
 import os
 import tomllib
 from fastapi import FastAPI
-from app.routers import company_router
+from app.routers import auth_router, company_router
 
 with open("pyproject.toml", "rb") as f:
     project_metadata = tomllib.load(f)["project"]
@@ -15,6 +15,7 @@ app = FastAPI(
 )
 
 app.include_router(company_router.router)
+app.include_router(auth_router.router)
 
 @app.get("/")
 def health_check():
