@@ -3,7 +3,7 @@ from fastapi import Depends, HTTPException, status
 from app.repositories.user_repository import UserRepository
 from app.models.user_model import User
 from app.schemas.user_schema import UserCreate
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash, verify_password, create_access_token
 
 class UserService:
     def __init__(self, repository: UserRepository = Depends()):
@@ -27,3 +27,30 @@ class UserService:
         )
 
         return self.repository.create(db_user=db_user)
+    
+    def authenticate_user(self, email: str, plain_password: str):
+        user = self.repository.get_by_email(email=email)
+
+        if not user or not verify_password(plain_password, user.hashed_password):
+            return None
+        
+        return user
+    
+    def login(self, email: str, password: str):
+        user = self.authenticate_user(email=email, plain_password=password)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid email or password.",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        token_payload = {"sub": user.email, "role": user.role}
+        access_token = create_access_token(data=token_payload)
+        
+        return {
+            "access_token": access_token, 
+            "token_type": "bearer"
+        }   
+        
+

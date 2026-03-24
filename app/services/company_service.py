@@ -15,3 +15,4 @@ class CompanyService:
 
     def get_companies(self, skip: int = 0, limit: int = 100):
         return self.repository.get_companies(skip=skip, limit=limit)
+    

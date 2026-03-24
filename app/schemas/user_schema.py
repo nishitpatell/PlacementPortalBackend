@@ -16,3 +16,7 @@ class UserResponse(UserBase):
     # the reason we need this config is because SQLAlchemy models don't return dicts, they return objects with attributes. This tells Pydantic to read data from attributes instead of expecting a dict.
     class Config:
         from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
