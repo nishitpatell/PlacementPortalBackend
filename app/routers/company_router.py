@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, Query
 from app.schemas.company_schema import CompanyResponse, CompanyCreate
 from app.services.company_service import CompanyService
-
+from app.core.dependencies import get_current_user
 
 router = APIRouter(
     prefix="/companies",
@@ -9,7 +9,12 @@ router = APIRouter(
 )
 
 @router.post("", response_model=CompanyResponse, status_code=status.HTTP_201_CREATED)
-def create_company_endpoint(company_in: CompanyCreate, _companyservice: CompanyService = Depends()):
+def create_company_endpoint(
+    company_in: CompanyCreate, 
+    _companyservice: CompanyService = Depends(),
+    current_user: dict = Depends(get_current_user)
+):
+    print(f"User {current_user['email']} with role {current_user['role']} is creating a company.")
     # Hand off the validated data and the DB session to the repository layer
     return _companyservice.create_company(company_data=company_in)
 
